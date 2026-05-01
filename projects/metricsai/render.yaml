@@ -8,7 +8,9 @@ services:
     envVars:
       - key: OPENAI_API_KEY
         sync: false
+      - key: OPENAI_BASE_URL
+        value: https://integrate.api.nvidia.com/v1
       - key: OPENAI_MODEL
-        value: gpt-4o-mini
+        value: meta/llama-3.3-70b-instruct
       - key: STREAM_INTERVAL_MS
         value: "1500"
