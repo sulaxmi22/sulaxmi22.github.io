@@ -280,9 +280,10 @@ button { font-family: inherit; }
     font-size: clamp(5rem, 13vw, 10.5rem);
     font-weight: 900;
     line-height: 0.9;
-    letter-spacing: -0.035em;
+    letter-spacing: -0.02em;
     color: var(--ink);
     margin-bottom: 2.5rem;
+    text-transform: uppercase;
 }
 
 .hero-name-line { display: block; }
