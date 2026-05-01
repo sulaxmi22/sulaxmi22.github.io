@@ -3,628 +3,496 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sulaxmi | AI Product Engineer</title>
-    <meta name="description" content="AI Product Engineer with 5+ years shipping RAG pipelines, multi-agent systems, and enterprise-scale full-stack applications. Specializes in agentic AI, LLMOps, NLP, Computer Vision, and full-stack development.">
-    <meta name="keywords" content="AI Engineer, LLM, RAG, Multi-Agent Systems, Full-Stack Developer, Machine Learning, NLP, Computer Vision">
-    <meta name="author" content="Sulaxmi">
-
-    <!-- Open Graph -->
-    <meta property="og:title" content="Sulaxmi | AI Product Engineer">
-    <meta property="og:description" content="AI Product Engineer shipping RAG pipelines, multi-agent systems, and enterprise-scale applications.">
+    <title>Sulaxmi Raskar — AI Product Engineer</title>
+    <meta name="description" content="AI Product Engineer with 5+ years shipping RAG pipelines, multi-agent systems, and enterprise-scale full-stack applications.">
+    <meta name="keywords" content="AI Engineer, LLM, RAG, Multi-Agent, LangGraph, Full-Stack, Machine Learning">
+    <meta name="author" content="Sulaxmi Raskar">
+    <meta property="og:title" content="Sulaxmi Raskar — AI Product Engineer">
+    <meta property="og:description" content="Building AI systems that ship — RAG pipelines, multi-agent architectures, and full-stack applications serving millions.">
     <meta property="og:type" content="website">
 
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-
-    <!-- Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700;1,900&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Animated Background -->
-    <canvas id="particles-canvas"></canvas>
+    <!-- Custom cursor -->
+    <div class="cursor" id="cursor"></div>
+
+    <!-- Reading progress -->
+    <div class="progress-bar" id="progress-bar"></div>
 
     <!-- Navigation -->
-    <nav class="navbar" id="navbar">
-        <div class="nav-container">
-            <a href="#hero" class="nav-logo">
-                <span class="logo-bracket">&lt;</span>S<span class="logo-dot">.</span>AI<span class="logo-bracket">/&gt;</span>
-            </a>
-            <ul class="nav-links" id="nav-links">
-                <li><a href="#about" class="nav-link">About</a></li>
-                <li><a href="#skills" class="nav-link">Skills</a></li>
-                <li><a href="#experience" class="nav-link">Experience</a></li>
-                <li><a href="#projects" class="nav-link">Projects</a></li>
-                <li><a href="#contact" class="nav-link">Contact</a></li>
-            </ul>
-            <a href="#contact" class="nav-cta">Let's Talk <i class="fas fa-arrow-right"></i></a>
-            <button class="hamburger" id="hamburger" aria-label="Toggle navigation">
-                <span></span><span></span><span></span>
+    <nav class="nav" id="nav">
+        <div class="nav-inner">
+            <a href="#hero" class="nav-brand">Sulaxmi Raskar</a>
+            <div class="nav-links" id="nav-links">
+                <a href="#projects" class="nav-link">Projects</a>
+                <a href="#experience" class="nav-link">Experience</a>
+                <a href="#skills" class="nav-link">Stack</a>
+                <a href="#contact" class="nav-link">Contact</a>
+            </div>
+            <a href="mailto:sulaxmiraskar496@gmail.com" class="nav-cta">Available for hire</a>
+            <button class="nav-hamburger" id="hamburger" aria-label="Menu">
+                <span></span><span></span>
             </button>
+        </div>
+        <div class="nav-mobile" id="nav-mobile">
+            <a href="#projects">Projects</a>
+            <a href="#experience">Experience</a>
+            <a href="#skills">Stack</a>
+            <a href="#contact">Contact</a>
         </div>
     </nav>
 
-    <!-- Hero Section -->
+    <!-- Hero -->
     <section class="hero" id="hero">
-        <div class="hero-content">
-            <div class="hero-badge">
-                <span class="badge-dot"></span>
-                Available for opportunities
+        <div class="hero-inner">
+            <div class="hero-top">
+                <span class="hero-meta">AI Product Engineer &mdash; Los Angeles, CA</span>
+                <span class="hero-status"><span class="status-dot"></span>Open to opportunities</span>
             </div>
-            <h1 class="hero-title">
-                <span class="hero-greeting">Hi, I'm</span>
-                <span class="hero-name">Sulaxmi</span>
+
+            <h1 class="hero-name">
+                <span class="hero-name-line">Sulaxmi</span>
+                <span class="hero-name-line italic">Raskar.</span>
             </h1>
-            <div class="hero-role-wrapper">
-                <span class="hero-role" id="typed-text"></span>
-                <span class="cursor">|</span>
-            </div>
-            <p class="hero-description">
-                AI Product Engineer with <strong>5+ years</strong> shipping RAG pipelines, multi-agent systems, 
-                and enterprise-scale full-stack applications serving <strong>millions of users</strong>. 
-                Currently at <strong>AT&T</strong>, architecting LLM-driven services and defining AI success metrics.
-            </p>
-            <div class="hero-stats">
-                <div class="stat">
-                    <span class="stat-number" data-target="5">0</span><span class="stat-suffix">+</span>
-                    <span class="stat-label">Years Experience</span>
-                </div>
-                <div class="stat-divider"></div>
-                <div class="stat">
-                    <span class="stat-number" data-target="30">0</span><span class="stat-suffix">%</span>
-                    <span class="stat-label">Reduced Agent Handling Time</span>
-                </div>
-                <div class="stat-divider"></div>
-                <div class="stat">
-                    <span class="stat-number" data-target="100">0</span><span class="stat-suffix">K+</span>
-                    <span class="stat-label">Monthly Active Users Served</span>
-                </div>
-            </div>
-            <div class="hero-actions">
-                <a href="#projects" class="btn btn-primary">
-                    <i class="fas fa-rocket"></i> View My Work
-                </a>
-                <a href="https://github.com/sulaxmi22" target="_blank" class="btn btn-secondary">
-                    <i class="fab fa-github"></i> GitHub
-                </a>
-                <a href="#contact" class="btn btn-ghost">
-                    <i class="fas fa-paper-plane"></i> Contact Me
-                </a>
-            </div>
-        </div>
-        <div class="hero-visual">
-            <div class="code-window">
-                <div class="code-header">
-                    <div class="code-dots">
-                        <span class="dot red"></span>
-                        <span class="dot yellow"></span>
-                        <span class="dot green"></span>
-                    </div>
-                    <span class="code-title">ai_engineer.py</span>
-                </div>
-                <pre class="code-body"><code><span class="code-keyword">class</span> <span class="code-class">AIEngineer</span>:
-    <span class="code-keyword">def</span> <span class="code-func">__init__</span>(self):
-        self.name = <span class="code-string">"Sulaxmi"</span>
-        self.role = <span class="code-string">"AI Product Engineer"</span>
-        self.stack = [
-            <span class="code-string">"LangGraph"</span>, <span class="code-string">"RAG"</span>,
-            <span class="code-string">"Multi-Agent AI"</span>,
-            <span class="code-string">"React"</span>, <span class="code-string">"FastAPI"</span>
-        ]
 
-    <span class="code-keyword">def</span> <span class="code-func">build</span>(self, problem):
-        solution = self.architect(problem)
-        <span class="code-keyword">return</span> self.deploy(solution)
-        <span class="code-comment"># Shipped to millions ✨</span></code></pre>
+            <div class="hero-divider"></div>
+
+            <div class="hero-bottom">
+                <p class="hero-bio">
+                    I build AI systems that ship. RAG pipelines, multi-agent architectures,
+                    and full-stack applications &mdash; production-grade, metrics-driven, and serving millions.
+                    Currently at <strong>AT&T</strong>, redefining how enterprise workflows talk to LLMs.
+                </p>
+                <div class="hero-right">
+                    <div class="hero-stats">
+                        <div class="hero-stat">
+                            <span class="hero-stat-n">5+</span>
+                            <span class="hero-stat-l">years engineering AI</span>
+                        </div>
+                        <div class="hero-stat">
+                            <span class="hero-stat-n">30%</span>
+                            <span class="hero-stat-l">reduced agent handling time</span>
+                        </div>
+                        <div class="hero-stat">
+                            <span class="hero-stat-n">100K+</span>
+                            <span class="hero-stat-l">monthly active users served</span>
+                        </div>
+                    </div>
+                    <div class="hero-actions">
+                        <a href="#projects" class="btn-primary">View Projects</a>
+                        <a href="https://github.com/sulaxmi22" target="_blank" rel="noopener" class="btn-ghost">GitHub &#8599;</a>
+                        <a href="https://linkedin.com/in/sulaxmi-raskar/" target="_blank" rel="noopener" class="btn-ghost">LinkedIn &#8599;</a>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="scroll-indicator">
-            <div class="mouse">
-                <div class="wheel"></div>
+
+        <div class="hero-scroll">
+            <div class="scroll-indicator">
+                <div class="scroll-line"></div>
             </div>
-            <span>Scroll to explore</span>
+            <span class="scroll-label">Scroll</span>
         </div>
     </section>
 
-    <!-- About Section -->
-    <section class="section about" id="about">
-        <div class="container">
+    <!-- Projects Section -->
+    <section class="section" id="projects">
+        <div class="section-inner">
             <div class="section-header">
-                <span class="section-tag"><i class="fas fa-user"></i> About Me</span>
-                <h2 class="section-title">Engineering AI That <span class="gradient-text">Delivers Impact</span></h2>
+                <span class="section-num">01</span>
+                <h2 class="section-title">Featured Projects</h2>
+                <p class="section-sub">Production-grade AI &mdash; deployed live, open source, and ready to explore.</p>
             </div>
-            <div class="about-grid">
-                <div class="about-card glass-card">
-                    <div class="about-icon"><i class="fas fa-brain"></i></div>
-                    <h3>AI & LLM Systems</h3>
-                    <p>Architecting production RAG pipelines and multi-agent systems that serve millions. Expert in LangGraph, CrewAI, and LLMOps with measurable business impact.</p>
-                </div>
-                <div class="about-card glass-card">
-                    <div class="about-icon"><i class="fas fa-code"></i></div>
-                    <h3>Full-Stack Engineering</h3>
-                    <p>Building end-to-end applications with React, Next.js, FastAPI, and TypeScript. From pixel-perfect UIs to scalable microservice architectures.</p>
-                </div>
-                <div class="about-card glass-card">
-                    <div class="about-icon"><i class="fas fa-chart-line"></i></div>
-                    <h3>Product-Driven AI</h3>
-                    <p>Defining AI success metrics, running A/B tests on LLM outputs, and partnering with product teams to iterate on quality. Data-driven decision making at scale.</p>
-                </div>
-                <div class="about-card glass-card">
-                    <div class="about-icon"><i class="fas fa-cloud"></i></div>
-                    <h3>Cloud & MLOps</h3>
-                    <p>Deploying and monitoring AI systems on AWS, GCP, and Azure. Expertise in Docker, Kubernetes, CI/CD, and model observability with MLflow and LangSmith.</p>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <!-- Skills Section -->
-    <section class="section skills" id="skills">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag"><i class="fas fa-tools"></i> Tech Stack</span>
-                <h2 class="section-title">Skills & <span class="gradient-text">Technologies</span></h2>
-            </div>
-            <div class="skills-bento">
-                <!-- AI / LLM & Agents -->
-                <div class="skill-category glass-card bento-large">
-                    <div class="skill-category-header">
-                        <i class="fas fa-robot"></i>
-                        <h3>AI / LLM & Agents</h3>
-                    </div>
-                    <div class="skill-tags">
-                        <span class="skill-tag tag-ai">LangChain</span>
-                        <span class="skill-tag tag-ai">LangGraph</span>
-                        <span class="skill-tag tag-ai">CrewAI</span>
-                        <span class="skill-tag tag-ai">Autogen</span>
-                        <span class="skill-tag tag-ai">RAG Pipelines</span>
-                        <span class="skill-tag tag-ai">Multi-Agent Systems</span>
-                        <span class="skill-tag tag-ai">Prompt Engineering</span>
-                        <span class="skill-tag tag-ai">LLMOps</span>
-                        <span class="skill-tag tag-ai">MCP</span>
-                        <span class="skill-tag tag-ai">RAGAS</span>
-                        <span class="skill-tag tag-ai">LangSmith</span>
-                        <span class="skill-tag tag-ai">OpenAI API</span>
-                        <span class="skill-tag tag-ai">Anthropic API</span>
-                        <span class="skill-tag tag-ai">Hugging Face</span>
-                        <span class="skill-tag tag-ai">LlamaIndex</span>
-                        <span class="skill-tag tag-ai">Fine-Tuning</span>
-                    </div>
-                </div>
+            <div class="projects-list">
 
-                <!-- Vector Databases -->
-                <div class="skill-category glass-card bento-medium">
-                    <div class="skill-category-header">
-                        <i class="fas fa-database"></i>
-                        <h3>Vector & Data Stores</h3>
+                <!-- IntelliRAG -->
+                <article class="project-row" id="proj-intellirag">
+                    <div class="project-row-main" role="button" tabindex="0" aria-expanded="false">
+                        <span class="proj-num">01</span>
+                        <div class="proj-title-group">
+                            <h3 class="proj-name">IntelliRAG</h3>
+                            <span class="proj-type">RAG Pipeline &middot; AI Evaluation</span>
+                        </div>
+                        <div class="proj-tags">
+                            <span>Python</span><span>FastAPI</span><span>LangChain</span><span>ChromaDB</span>
+                        </div>
+                        <div class="proj-links">
+                            <a href="https://github.com/sulaxmi22/intellirag" target="_blank" rel="noopener">Code &#8599;</a>
+                            <a href="https://sulaxmi22.github.io/projects/intellirag/frontend/index.html" target="_blank" rel="noopener" class="proj-demo">Live Demo &#8599;</a>
+                        </div>
+                        <button class="proj-toggle" aria-label="Toggle project details">+</button>
                     </div>
-                    <div class="skill-tags">
-                        <span class="skill-tag tag-data">pgvector</span>
-                        <span class="skill-tag tag-data">ChromaDB</span>
-                        <span class="skill-tag tag-data">FAISS</span>
-                        <span class="skill-tag tag-data">Pinecone</span>
-                        <span class="skill-tag tag-data">Weaviate</span>
-                        <span class="skill-tag tag-data">Qdrant</span>
-                        <span class="skill-tag tag-data">PostgreSQL</span>
-                        <span class="skill-tag tag-data">MongoDB</span>
-                        <span class="skill-tag tag-data">Redis</span>
+                    <div class="project-expand">
+                        <div class="project-expand-wrap">
+                            <div class="project-expand-inner">
+                                <div class="project-detail-left">
+                                    <div class="proj-preview intellirag-preview">
+                                        <div class="term-bar">
+                                            <span class="term-dot"></span><span class="term-dot"></span><span class="term-dot"></span>
+                                            <span class="term-title">intellirag &mdash; pipeline</span>
+                                        </div>
+                                        <div class="term-body">
+                                            <div class="term-line"><span class="t-dim">$ </span><span class="t-cmd">ingest("enterprise_docs.pdf")</span></div>
+                                            <div class="term-line"><span class="t-dim">&#10142; </span><span class="t-ok">Chunked &amp; embedded &#10003;</span></div>
+                                            <div class="term-line"><span class="t-dim">&#10142; </span><span class="t-ok">Hybrid Search: BM25 + Vector &#10003;</span></div>
+                                            <div class="term-line"><span class="t-dim">&#10142; </span><span class="t-ok">Cross-Encoder Reranking &#10003;</span></div>
+                                            <div class="term-line"><span class="t-dim">&#10142; </span><span class="t-metric">RAGAS Faithfulness: 0.92</span></div>
+                                            <div class="term-line"><span class="t-dim">&#10142; </span><span class="t-metric">Relevance Score: 0.89</span></div>
+                                            <div class="term-line"><span class="t-dim">&#10142; </span><span class="t-ok">Streaming response + citations &#10024;</span></div>
+                                        </div>
+                                    </div>
+                                    <div class="proj-metrics-row">
+                                        <div class="proj-metric"><span>0.92</span><label>Faithfulness</label></div>
+                                        <div class="proj-metric"><span>0.89</span><label>Relevance</label></div>
+                                        <div class="proj-metric"><span>&lt;2s</span><label>Latency</label></div>
+                                    </div>
+                                </div>
+                                <div class="project-detail-right">
+                                    <p class="proj-desc">
+                                        Production-grade RAG pipeline with hybrid retrieval (BM25 sparse + dense vector), cross-encoder reranking, and a corrective RAG loop that self-evaluates before responding. Built-in RAGAS evaluation tracks faithfulness, relevancy, and context precision. Streaming responses with inline source citations.
+                                    </p>
+                                    <ul class="proj-features">
+                                        <li>Hybrid retrieval: BM25 sparse + dense vector search</li>
+                                        <li>Cross-encoder reranking for precision</li>
+                                        <li>Corrective RAG loop with self-evaluation</li>
+                                        <li>RAGAS metrics: faithfulness, relevancy, context precision</li>
+                                        <li>Streaming answers with source citations</li>
+                                    </ul>
+                                    <div class="proj-cta">
+                                        <a href="https://sulaxmi22.github.io/projects/intellirag/frontend/index.html" target="_blank" rel="noopener" class="btn-primary-sm">Open Live Demo &#8599;</a>
+                                        <a href="https://github.com/sulaxmi22/intellirag" target="_blank" rel="noopener" class="btn-ghost-sm">View Code &#8599;</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                </article>
 
-                <!-- Full-Stack -->
-                <div class="skill-category glass-card bento-medium">
-                    <div class="skill-category-header">
-                        <i class="fas fa-layer-group"></i>
-                        <h3>Full-Stack & Languages</h3>
+                <!-- AgentForge -->
+                <article class="project-row" id="proj-agentforge">
+                    <div class="project-row-main" role="button" tabindex="0" aria-expanded="false">
+                        <span class="proj-num">02</span>
+                        <div class="proj-title-group">
+                            <h3 class="proj-name">AgentForge</h3>
+                            <span class="proj-type">Multi-Agent AI &middot; LangGraph</span>
+                        </div>
+                        <div class="proj-tags">
+                            <span>LangGraph</span><span>FastAPI</span><span>Tavily</span><span>React</span>
+                        </div>
+                        <div class="proj-links">
+                            <a href="https://github.com/sulaxmi22/agentforge" target="_blank" rel="noopener">Code &#8599;</a>
+                            <a href="https://sulaxmi22.github.io/projects/agentforge/frontend/index.html" target="_blank" rel="noopener" class="proj-demo">Live Demo &#8599;</a>
+                        </div>
+                        <button class="proj-toggle" aria-label="Toggle project details">+</button>
                     </div>
-                    <div class="skill-tags">
-                        <span class="skill-tag tag-stack">Python</span>
-                        <span class="skill-tag tag-stack">TypeScript</span>
-                        <span class="skill-tag tag-stack">JavaScript</span>
-                        <span class="skill-tag tag-stack">Java</span>
-                        <span class="skill-tag tag-stack">React.js</span>
-                        <span class="skill-tag tag-stack">Next.js</span>
-                        <span class="skill-tag tag-stack">FastAPI</span>
-                        <span class="skill-tag tag-stack">Node.js</span>
-                        <span class="skill-tag tag-stack">GraphQL</span>
-                        <span class="skill-tag tag-stack">REST APIs</span>
-                        <span class="skill-tag tag-stack">Microservices</span>
-                        <span class="skill-tag tag-stack">Spring Boot</span>
+                    <div class="project-expand">
+                        <div class="project-expand-wrap">
+                            <div class="project-expand-inner">
+                                <div class="project-detail-left">
+                                    <div class="proj-preview agentforge-preview">
+                                        <div class="agent-flow-diagram">
+                                            <div class="afd-node">
+                                                <div class="afd-icon">&#x21C4;</div>
+                                                <span>Router</span>
+                                            </div>
+                                            <div class="afd-arrow">&rarr;</div>
+                                            <div class="afd-node">
+                                                <div class="afd-icon">&#128269;</div>
+                                                <span>Researcher</span>
+                                            </div>
+                                            <div class="afd-arrow">&rarr;</div>
+                                            <div class="afd-node">
+                                                <div class="afd-icon">&#9998;</div>
+                                                <span>Writer</span>
+                                            </div>
+                                            <div class="afd-arrow">&rarr;</div>
+                                            <div class="afd-node">
+                                                <div class="afd-icon">&#10003;</div>
+                                                <span>Critic</span>
+                                            </div>
+                                        </div>
+                                        <div class="afd-loop">
+                                            <span class="afd-loop-line"></span>
+                                            <span class="afd-loop-label">quality loop &lt; 0.8 &#x21BA;</span>
+                                        </div>
+                                        <div class="afd-note">Stateful graph &middot; conditional routing &middot; HITL</div>
+                                    </div>
+                                    <div class="proj-metrics-row">
+                                        <div class="proj-metric"><span>4</span><label>Agents</label></div>
+                                        <div class="proj-metric"><span>HITL</span><label>Human-in-Loop</label></div>
+                                        <div class="proj-metric"><span>Live</span><label>Deployed</label></div>
+                                    </div>
+                                </div>
+                                <div class="project-detail-right">
+                                    <p class="proj-desc">
+                                        Multi-agent research assistant built on LangGraph's stateful graph architecture. Agents collaborate through conditional routing: Router classifies the query type, Researcher runs multi-query web search via Tavily, Writer drafts a structured report, and Critic scores quality (0&ndash;1) &mdash; triggering revision loops until the threshold is met.
+                                    </p>
+                                    <ul class="proj-features">
+                                        <li>LangGraph stateful graph with conditional edges</li>
+                                        <li>Tavily web search with multi-query strategy</li>
+                                        <li>Critic scores quality and triggers revision loops</li>
+                                        <li>Real-time agent activity log visualization</li>
+                                        <li>Human-in-the-loop approval checkpoint</li>
+                                    </ul>
+                                    <div class="proj-cta">
+                                        <a href="https://sulaxmi22.github.io/projects/agentforge/frontend/index.html" target="_blank" rel="noopener" class="btn-primary-sm">Open Live Demo &#8599;</a>
+                                        <a href="https://github.com/sulaxmi22/agentforge" target="_blank" rel="noopener" class="btn-ghost-sm">View Code &#8599;</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                </article>
 
-                <!-- Cloud & Infra -->
-                <div class="skill-category glass-card bento-medium">
-                    <div class="skill-category-header">
-                        <i class="fas fa-cloud"></i>
-                        <h3>Cloud & Infrastructure</h3>
+                <!-- MetricsAI -->
+                <article class="project-row" id="proj-metricsai">
+                    <div class="project-row-main" role="button" tabindex="0" aria-expanded="false">
+                        <span class="proj-num">03</span>
+                        <div class="proj-title-group">
+                            <h3 class="proj-name">MetricsAI</h3>
+                            <span class="proj-type">Real-Time Analytics &middot; AI Insights</span>
+                        </div>
+                        <div class="proj-tags">
+                            <span>FastAPI</span><span>WebSockets</span><span>Chart.js</span><span>OpenAI</span>
+                        </div>
+                        <div class="proj-links">
+                            <a href="https://github.com/sulaxmi22/metricsai" target="_blank" rel="noopener">Code &#8599;</a>
+                            <a href="https://sulaxmi22.github.io/projects/metricsai/frontend/index.html" target="_blank" rel="noopener" class="proj-demo">Live Demo &#8599;</a>
+                        </div>
+                        <button class="proj-toggle" aria-label="Toggle project details">+</button>
                     </div>
-                    <div class="skill-tags">
-                        <span class="skill-tag tag-cloud">AWS</span>
-                        <span class="skill-tag tag-cloud">GCP</span>
-                        <span class="skill-tag tag-cloud">Azure</span>
-                        <span class="skill-tag tag-cloud">Docker</span>
-                        <span class="skill-tag tag-cloud">Kubernetes</span>
-                        <span class="skill-tag tag-cloud">Terraform</span>
-                        <span class="skill-tag tag-cloud">GitHub Actions</span>
-                        <span class="skill-tag tag-cloud">CI/CD</span>
-                        <span class="skill-tag tag-cloud">MLflow</span>
-                        <span class="skill-tag tag-cloud">SageMaker</span>
+                    <div class="project-expand">
+                        <div class="project-expand-wrap">
+                            <div class="project-expand-inner">
+                                <div class="project-detail-left">
+                                    <div class="proj-preview metricsai-preview">
+                                        <div class="dash-header">
+                                            <span class="dash-live"><span class="dash-dot"></span>Live</span>
+                                            <span class="dash-title">MetricsAI Dashboard</span>
+                                        </div>
+                                        <div class="dash-kpis">
+                                            <div class="dash-kpi">
+                                                <span class="dkpi-val up">&#8593; $24.1K</span>
+                                                <span class="dkpi-l">Revenue</span>
+                                            </div>
+                                            <div class="dash-kpi">
+                                                <span class="dkpi-val">1,247</span>
+                                                <span class="dkpi-l">Active Users</span>
+                                            </div>
+                                            <div class="dash-kpi">
+                                                <span class="dkpi-val warn">2.3%</span>
+                                                <span class="dkpi-l">Error Rate</span>
+                                            </div>
+                                        </div>
+                                        <div class="dash-chart-area">
+                                            <svg viewBox="0 0 220 55" preserveAspectRatio="none" class="dash-svg">
+                                                <defs>
+                                                    <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                                                        <stop offset="0%" stop-color="#c2410c" stop-opacity="0.25"/>
+                                                        <stop offset="100%" stop-color="#c2410c" stop-opacity="0"/>
+                                                    </linearGradient>
+                                                </defs>
+                                                <polygon points="0,55 0,42 25,35 50,38 75,22 100,27 125,14 150,18 175,9 220,12 220,55" fill="url(#chartGrad)"/>
+                                                <polyline points="0,42 25,35 50,38 75,22 100,27 125,14 150,18 175,9 220,12" fill="none" stroke="#c2410c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                            </svg>
+                                        </div>
+                                        <div class="dash-ai-badge">&#x26A1; AI Anomaly: Spike in error rate detected</div>
+                                    </div>
+                                    <div class="proj-metrics-row">
+                                        <div class="proj-metric"><span>RT</span><label>Real-Time</label></div>
+                                        <div class="proj-metric"><span>WS</span><label>WebSocket</label></div>
+                                        <div class="proj-metric"><span>LLM</span><label>AI Insights</label></div>
+                                    </div>
+                                </div>
+                                <div class="project-detail-right">
+                                    <p class="proj-desc">
+                                        Real-time analytics dashboard streaming live business and system metrics over WebSocket at 1.5s intervals. LLM-powered anomaly detection surfaces insights with severity classification (healthy / warning / critical). Ask questions in plain English about the data. Interactive Chart.js charts with rolling 60-point history.
+                                    </p>
+                                    <ul class="proj-features">
+                                        <li>WebSocket streaming with HTTP polling fallback</li>
+                                        <li>LLM anomaly detection with severity classification</li>
+                                        <li>Natural language querying ("what's the trend?")</li>
+                                        <li>Dual-axis revenue/users chart, error rate bars</li>
+                                        <li>Error rate alerting with live visual state changes</li>
+                                    </ul>
+                                    <div class="proj-cta">
+                                        <a href="https://sulaxmi22.github.io/projects/metricsai/frontend/index.html" target="_blank" rel="noopener" class="btn-primary-sm">Open Live Demo &#8599;</a>
+                                        <a href="https://github.com/sulaxmi22/metricsai" target="_blank" rel="noopener" class="btn-ghost-sm">View Code &#8599;</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                </article>
 
-                <!-- NLP / CV / Data -->
-                <div class="skill-category glass-card bento-medium">
-                    <div class="skill-category-header">
-                        <i class="fas fa-eye"></i>
-                        <h3>NLP / CV / Data</h3>
-                    </div>
-                    <div class="skill-tags">
-                        <span class="skill-tag tag-ml">NLP</span>
-                        <span class="skill-tag tag-ml">Computer Vision</span>
-                        <span class="skill-tag tag-ml">Transformers</span>
-                        <span class="skill-tag tag-ml">Tokenization</span>
-                        <span class="skill-tag tag-ml">Embedding Spaces</span>
-                        <span class="skill-tag tag-ml">BLEU / ROUGE</span>
-                        <span class="skill-tag tag-ml">ETL Pipelines</span>
-                        <span class="skill-tag tag-ml">Power BI</span>
-                        <span class="skill-tag tag-ml">ML Feature Stores</span>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
 
     <!-- Experience Section -->
-    <section class="section experience" id="experience">
-        <div class="container">
+    <section class="section section-alt" id="experience">
+        <div class="section-inner">
             <div class="section-header">
-                <span class="section-tag"><i class="fas fa-briefcase"></i> Career</span>
-                <h2 class="section-title">Professional <span class="gradient-text">Experience</span></h2>
+                <span class="section-num">02</span>
+                <h2 class="section-title">Experience</h2>
             </div>
-            <div class="timeline">
-                <!-- AT&T -->
-                <div class="timeline-item reveal">
-                    <div class="timeline-marker">
-                        <div class="marker-dot"></div>
-                        <div class="marker-line"></div>
+
+            <div class="exp-list">
+
+                <div class="exp-row reveal">
+                    <div class="exp-left">
+                        <span class="exp-date">Dec 2024 &mdash; Present</span>
+                        <span class="exp-badge">Current</span>
                     </div>
-                    <div class="timeline-card glass-card">
-                        <div class="timeline-header">
-                            <div class="timeline-company">
-                                <h3>AT&T</h3>
-                                <span class="timeline-badge current">Current</span>
-                            </div>
-                            <span class="timeline-date">Dec 2024 – Present</span>
+                    <div class="exp-right">
+                        <div class="exp-header">
+                            <h3 class="exp-company">AT&amp;T</h3>
+                            <span class="exp-role">Fullstack Developer, AI Platform Enablement</span>
                         </div>
-                        <h4 class="timeline-role">Fullstack Developer, AI Platform Enablement</h4>
-                        <ul class="timeline-details">
-                            <li>
-                                <i class="fas fa-bolt"></i>
-                                Redesigned monolithic backend into modular, LLM-consumable APIs enabling enterprise RAG pipeline integration — <strong>reduced agent handling time by 30%</strong> across telecom workflows serving millions of monthly users.
-                            </li>
-                            <li>
-                                <i class="fas fa-chart-bar"></i>
-                                Partnered with product and UX teams to define AI success metrics, ran A/B tests on LLM output presentation — <strong>lifted usability by 15%</strong> in production.
-                            </li>
+                        <ul class="exp-details">
+                            <li>Redesigned monolithic backend into modular, LLM-consumable APIs enabling enterprise RAG pipeline integration &mdash; <strong>reduced agent handling time by 30%</strong> across telecom workflows serving millions</li>
+                            <li>Defined AI success metrics, ran A/B tests on LLM output presentation &mdash; <strong>lifted usability by 15%</strong> in production</li>
                         </ul>
-                        <div class="timeline-tech">
+                        <div class="exp-tech">
                             <span>RAG</span><span>LLM APIs</span><span>React</span><span>FastAPI</span><span>A/B Testing</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- City of Charlotte -->
-                <div class="timeline-item reveal">
-                    <div class="timeline-marker">
-                        <div class="marker-dot"></div>
-                        <div class="marker-line"></div>
+                <div class="exp-row reveal">
+                    <div class="exp-left">
+                        <span class="exp-date">Sep &mdash; Dec 2024</span>
                     </div>
-                    <div class="timeline-card glass-card">
-                        <div class="timeline-header">
-                            <div class="timeline-company">
-                                <h3>City of Charlotte</h3>
-                            </div>
-                            <span class="timeline-date">Sep 2024 – Dec 2024</span>
+                    <div class="exp-right">
+                        <div class="exp-header">
+                            <h3 class="exp-company">City of Charlotte</h3>
+                            <span class="exp-role">Senior Software Developer</span>
                         </div>
-                        <h4 class="timeline-role">Senior Software Developer</h4>
-                        <ul class="timeline-details">
-                            <li>
-                                <i class="fas fa-users"></i>
-                                Delivered citizen-facing full-stack apps (React, GraphQL, AWS) across utilities, transportation, and emergency services for <strong>100K+ monthly active users</strong>.
-                            </li>
-                            <li>
-                                <i class="fas fa-mobile-alt"></i>
-                                Scaled React Native platform — <strong>boosted engagement by 25%</strong>.
-                            </li>
+                        <ul class="exp-details">
+                            <li>Delivered citizen-facing full-stack apps (React, GraphQL, AWS) across utilities, transportation, and emergency services for <strong>100K+ monthly active users</strong></li>
+                            <li>Scaled React Native platform &mdash; <strong>boosted engagement by 25%</strong></li>
                         </ul>
-                        <div class="timeline-tech">
+                        <div class="exp-tech">
                             <span>React</span><span>GraphQL</span><span>AWS</span><span>React Native</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Endeavour -->
-                <div class="timeline-item reveal">
-                    <div class="timeline-marker">
-                        <div class="marker-dot"></div>
-                        <div class="marker-line"></div>
+                <div class="exp-row reveal">
+                    <div class="exp-left">
+                        <span class="exp-date">Jun 2023 &mdash; May 2024</span>
                     </div>
-                    <div class="timeline-card glass-card">
-                        <div class="timeline-header">
-                            <div class="timeline-company">
-                                <h3>Endeavour / Edged Energy</h3>
-                            </div>
-                            <span class="timeline-date">Jun 2023 – May 2024</span>
+                    <div class="exp-right">
+                        <div class="exp-header">
+                            <h3 class="exp-company">Endeavour / Edged Energy</h3>
+                            <span class="exp-role">Data Engineer</span>
                         </div>
-                        <h4 class="timeline-role">Data Engineer</h4>
-                        <ul class="timeline-details">
-                            <li>
-                                <i class="fas fa-cogs"></i>
-                                Designed ETL pipelines and ML feature stores — <strong>reduced manual processing by 80%</strong>.
-                            </li>
-                            <li>
-                                <i class="fas fa-clock"></i>
-                                Implemented Workato automation — <strong>saved 10+ hours/week</strong> across cross-functional teams.
-                            </li>
+                        <ul class="exp-details">
+                            <li>Designed ETL pipelines and ML feature stores &mdash; <strong>reduced manual processing by 80%</strong></li>
+                            <li>Implemented Workato automation &mdash; <strong>saved 10+ hours/week</strong> across cross-functional teams</li>
                         </ul>
-                        <div class="timeline-tech">
-                            <span>ETL</span><span>ML Feature Stores</span><span>Workato</span><span>Python</span>
+                        <div class="exp-tech">
+                            <span>ETL</span><span>ML Feature Stores</span><span>Python</span><span>Workato</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Cal State LA -->
-                <div class="timeline-item reveal">
-                    <div class="timeline-marker">
-                        <div class="marker-dot"></div>
-                        <div class="marker-line"></div>
+                <div class="exp-row reveal">
+                    <div class="exp-left">
+                        <span class="exp-date">Nov 2022 &mdash; Apr 2024</span>
                     </div>
-                    <div class="timeline-card glass-card">
-                        <div class="timeline-header">
-                            <div class="timeline-company">
-                                <h3>California State University, LA</h3>
-                            </div>
-                            <span class="timeline-date">Nov 2022 – Apr 2024</span>
+                    <div class="exp-right">
+                        <div class="exp-header">
+                            <h3 class="exp-company">California State University, LA</h3>
+                            <span class="exp-role">AI Research &amp; Robotics Engineer</span>
                         </div>
-                        <h4 class="timeline-role">AI Research & Robotics Engineer</h4>
-                        <ul class="timeline-details">
-                            <li>
-                                <i class="fas fa-robot"></i>
-                                Programmed NAO Humanoid Robot with NLP, Computer Vision, and Motion Planning using Probabilistic Graphical Models — delivered <strong>AI-assisted math lessons to 20+ children</strong>.
-                            </li>
-                            <li>
-                                <i class="fas fa-graduation-cap"></i>
-                                Mentored <strong>30+ students</strong> in AI, ML, and robotics.
-                            </li>
+                        <ul class="exp-details">
+                            <li>Programmed NAO Humanoid Robot with NLP, Computer Vision, and Motion Planning &mdash; delivered <strong>AI-assisted math lessons to 20+ children</strong></li>
+                            <li>Mentored <strong>30+ students</strong> in AI, ML, and robotics</li>
                         </ul>
-                        <div class="timeline-tech">
+                        <div class="exp-tech">
                             <span>Python</span><span>Java</span><span>NLP</span><span>Computer Vision</span><span>Robotics</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Accenture -->
-                <div class="timeline-item reveal">
-                    <div class="timeline-marker">
-                        <div class="marker-dot"></div>
-                        <div class="marker-line"></div>
+                <div class="exp-row reveal">
+                    <div class="exp-left">
+                        <span class="exp-date">Sep 2019 &mdash; Jul 2022</span>
                     </div>
-                    <div class="timeline-card glass-card">
-                        <div class="timeline-header">
-                            <div class="timeline-company">
-                                <h3>Accenture</h3>
-                            </div>
-                            <span class="timeline-date">Sep 2019 – Jul 2022</span>
+                    <div class="exp-right">
+                        <div class="exp-header">
+                            <h3 class="exp-company">Accenture</h3>
+                            <span class="exp-role">Application Development Analyst</span>
                         </div>
-                        <h4 class="timeline-role">Application Development Analyst</h4>
-                        <ul class="timeline-details">
-                            <li>
-                                <i class="fas fa-server"></i>
-                                Scaled enterprise frontend and API platforms using reusable React component libraries and microservices architecture.
-                            </li>
-                            <li>
-                                <i class="fas fa-cube"></i>
-                                Built modular, production-grade applications across multiple enterprise clients.
-                            </li>
+                        <ul class="exp-details">
+                            <li>Scaled enterprise frontend and API platforms using reusable React component libraries and microservices architecture</li>
+                            <li>Built modular, production-grade applications across multiple enterprise clients</li>
                         </ul>
-                        <div class="timeline-tech">
-                            <span>React</span><span>Java</span><span>Microservices</span><span>REST APIs</span><span>Spring Boot</span>
+                        <div class="exp-tech">
+                            <span>React</span><span>Java</span><span>Spring Boot</span><span>Microservices</span><span>REST APIs</span>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </section>
 
-    <!-- Projects Section -->
-    <section class="section projects" id="projects">
-        <div class="container">
+    <!-- Skills Section -->
+    <section class="section" id="skills">
+        <div class="section-inner">
             <div class="section-header">
-                <span class="section-tag"><i class="fas fa-rocket"></i> Portfolio</span>
-                <h2 class="section-title">Featured <span class="gradient-text">Projects</span></h2>
-                <p class="section-subtitle">Production-grade AI systems — fully functional, deployed live, and open source.</p>
+                <span class="section-num">03</span>
+                <h2 class="section-title">Tech Stack</h2>
             </div>
 
-            <div class="projects-grid">
-                <!-- Project 1: IntelliRAG -->
-                <div class="project-card glass-card reveal">
-                    <div class="project-image">
-                        <div class="project-preview intellirag-preview">
-                            <div class="preview-terminal">
-                                <div class="terminal-header">
-                                    <span class="terminal-dot red"></span>
-                                    <span class="terminal-dot yellow"></span>
-                                    <span class="terminal-dot green"></span>
-                                    <span class="terminal-title">IntelliRAG</span>
-                                </div>
-                                <div class="terminal-body">
-                                    <div class="terminal-line"><span class="t-prompt">→</span> <span class="t-cmd">Ingesting</span> <span class="t-file">enterprise_docs.pdf</span></div>
-                                    <div class="terminal-line"><span class="t-prompt">→</span> <span class="t-cmd">Hybrid Search:</span> <span class="t-success">BM25 + Vector</span></div>
-                                    <div class="terminal-line"><span class="t-prompt">→</span> <span class="t-cmd">Reranking:</span> <span class="t-success">Cross-Encoder ✓</span></div>
-                                    <div class="terminal-line"><span class="t-prompt">→</span> <span class="t-cmd">RAGAS Score:</span> <span class="t-metric">0.92 faithfulness</span></div>
-                                    <div class="terminal-line"><span class="t-prompt">→</span> <span class="t-cmd">Response:</span> <span class="t-success">Streaming with citations ✨</span></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="project-overlay">
-                            <a href="https://github.com/sulaxmi22/intellirag" target="_blank" class="overlay-btn"><i class="fab fa-github"></i> Code</a>
-                            <a href="https://sulaxmi22.github.io/projects/intellirag/frontend/index.html" target="_blank" class="overlay-btn"><i class="fas fa-external-link-alt"></i> Live Demo</a>
-                        </div>
-                    </div>
-                    <div class="project-content">
-                        <div class="project-category">AI / RAG Pipeline</div>
-                        <h3 class="project-title">IntelliRAG</h3>
-                        <p class="project-desc">Production-grade RAG pipeline with hybrid search (BM25 + Vector), cross-encoder reranking, corrective RAG with self-evaluation, and RAGAS metrics. Streaming responses with source citations.</p>
-                        <div class="project-tech">
-                            <span>Python</span>
-                            <span>FastAPI</span>
-                            <span>LangChain</span>
-                            <span>ChromaDB</span>
-                            <span>RAGAS</span>
-                            <span>Docker</span>
-                        </div>
-                        <div class="project-metrics">
-                            <div class="metric">
-                                <span class="metric-value">0.92</span>
-                                <span class="metric-label">Faithfulness</span>
-                            </div>
-                            <div class="metric">
-                                <span class="metric-value">0.89</span>
-                                <span class="metric-label">Relevance</span>
-                            </div>
-                            <div class="metric">
-                                <span class="metric-value">&lt;2s</span>
-                                <span class="metric-label">Latency</span>
-                            </div>
-                        </div>
+            <div class="skills-grid">
+                <div class="skill-group reveal">
+                    <h3 class="sg-title">AI / LLM &amp; Agents</h3>
+                    <div class="sg-tags">
+                        <span>LangChain</span><span>LangGraph</span><span>CrewAI</span><span>Autogen</span>
+                        <span>RAG Pipelines</span><span>Multi-Agent Systems</span><span>Prompt Engineering</span>
+                        <span>LLMOps</span><span>MCP</span><span>RAGAS</span><span>LangSmith</span>
+                        <span>OpenAI API</span><span>Anthropic API</span><span>Hugging Face</span>
+                        <span>LlamaIndex</span><span>Fine-Tuning</span>
                     </div>
                 </div>
-
-                <!-- Project 2: AgentForge -->
-                <div class="project-card glass-card reveal">
-                    <div class="project-image">
-                        <div class="project-preview agentforge-preview">
-                            <div class="agent-flow">
-                                <div class="agent-node router">
-                                    <i class="fas fa-route"></i>
-                                    <span>Router</span>
-                                </div>
-                                <div class="agent-arrow">→</div>
-                                <div class="agent-node researcher">
-                                    <i class="fas fa-search"></i>
-                                    <span>Researcher</span>
-                                </div>
-                                <div class="agent-arrow">→</div>
-                                <div class="agent-node writer">
-                                    <i class="fas fa-pen-fancy"></i>
-                                    <span>Writer</span>
-                                </div>
-                                <div class="agent-arrow">→</div>
-                                <div class="agent-node critic">
-                                    <i class="fas fa-check-double"></i>
-                                    <span>Critic</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="project-overlay">
-                            <a href="https://github.com/sulaxmi22/agentforge" target="_blank" class="overlay-btn"><i class="fab fa-github"></i> Code</a>
-                            <a href="https://sulaxmi22.github.io/projects/agentforge/frontend/index.html" target="_blank" class="overlay-btn"><i class="fas fa-external-link-alt"></i> Live Demo</a>
-                        </div>
-                    </div>
-                    <div class="project-content">
-                        <div class="project-category">Agentic AI / Multi-Agent</div>
-                        <h3 class="project-title">AgentForge</h3>
-                        <p class="project-desc">Multi-agent research assistant built with LangGraph. Specialized agents (Router, Researcher, Writer, Critic) collaborate via stateful graph with conditional routing, tool use, and human-in-the-loop approval.</p>
-                        <div class="project-tech">
-                            <span>LangGraph</span>
-                            <span>LangChain</span>
-                            <span>FastAPI</span>
-                            <span>Tavily</span>
-                            <span>React</span>
-                            <span>Docker</span>
-                        </div>
-                        <div class="project-metrics">
-                            <div class="metric">
-                                <span class="metric-value">4</span>
-                                <span class="metric-label">Agents</span>
-                            </div>
-                            <div class="metric">
-                                <span class="metric-value">HITL</span>
-                                <span class="metric-label">Human-in-Loop</span>
-                            </div>
-                            <div class="metric">
-                                <span class="metric-value">Auto</span>
-                                <span class="metric-label">Error Recovery</span>
-                            </div>
-                        </div>
+                <div class="skill-group reveal">
+                    <h3 class="sg-title">Vector &amp; Data Stores</h3>
+                    <div class="sg-tags">
+                        <span>pgvector</span><span>ChromaDB</span><span>FAISS</span><span>Pinecone</span>
+                        <span>Weaviate</span><span>Qdrant</span><span>PostgreSQL</span><span>MongoDB</span><span>Redis</span>
                     </div>
                 </div>
-
-                <!-- Project 3: MetricsAI -->
-                <div class="project-card glass-card reveal">
-                    <div class="project-image">
-                        <div class="project-preview metricsai-preview">
-                            <div class="dashboard-mini">
-                                <div class="mini-chart">
-                                    <div class="bar" style="height: 40%"></div>
-                                    <div class="bar" style="height: 65%"></div>
-                                    <div class="bar" style="height: 85%"></div>
-                                    <div class="bar" style="height: 55%"></div>
-                                    <div class="bar" style="height: 95%"></div>
-                                    <div class="bar" style="height: 70%"></div>
-                                    <div class="bar" style="height: 80%"></div>
-                                </div>
-                                <div class="mini-stats">
-                                    <div class="mini-stat">
-                                        <span class="mini-val up">↑ 24%</span>
-                                        <span class="mini-label">Revenue</span>
-                                    </div>
-                                    <div class="mini-stat">
-                                        <span class="mini-val">1.2K</span>
-                                        <span class="mini-label">Active Users</span>
-                                    </div>
-                                    <div class="mini-stat">
-                                        <span class="mini-val ai">AI Insight</span>
-                                        <span class="mini-label">Anomaly Found</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="project-overlay">
-                            <a href="https://github.com/sulaxmi22/metricsai" target="_blank" class="overlay-btn"><i class="fab fa-github"></i> Code</a>
-                            <a href="https://sulaxmi22.github.io/projects/metricsai/frontend/index.html" target="_blank" class="overlay-btn"><i class="fas fa-external-link-alt"></i> Live Demo</a>
-                        </div>
+                <div class="skill-group reveal">
+                    <h3 class="sg-title">Full-Stack &amp; Languages</h3>
+                    <div class="sg-tags">
+                        <span>Python</span><span>TypeScript</span><span>JavaScript</span><span>Java</span>
+                        <span>React.js</span><span>Next.js</span><span>FastAPI</span><span>Node.js</span>
+                        <span>GraphQL</span><span>REST APIs</span><span>Microservices</span><span>Spring Boot</span>
                     </div>
-                    <div class="project-content">
-                        <div class="project-category">Full-Stack / Analytics</div>
-                        <h3 class="project-title">MetricsAI</h3>
-                        <p class="project-desc">Real-time AI analytics dashboard with WebSocket streaming, interactive Chart.js visualizations, and LLM-powered anomaly detection. Features live data feeds, custom alerts, and natural language data querying.</p>
-                        <div class="project-tech">
-                            <span>FastAPI</span>
-                            <span>WebSockets</span>
-                            <span>Chart.js</span>
-                            <span>OpenAI</span>
-                            <span>PostgreSQL</span>
-                            <span>Docker</span>
-                        </div>
-                        <div class="project-metrics">
-                            <div class="metric">
-                                <span class="metric-value">RT</span>
-                                <span class="metric-label">Real-Time</span>
-                            </div>
-                            <div class="metric">
-                                <span class="metric-value">AI</span>
-                                <span class="metric-label">LLM Insights</span>
-                            </div>
-                            <div class="metric">
-                                <span class="metric-value">WS</span>
-                                <span class="metric-label">WebSocket</span>
-                            </div>
-                        </div>
+                </div>
+                <div class="skill-group reveal">
+                    <h3 class="sg-title">Cloud &amp; Infrastructure</h3>
+                    <div class="sg-tags">
+                        <span>AWS</span><span>GCP</span><span>Azure</span><span>Docker</span>
+                        <span>Kubernetes</span><span>Terraform</span><span>GitHub Actions</span>
+                        <span>CI/CD</span><span>MLflow</span><span>SageMaker</span>
+                    </div>
+                </div>
+                <div class="skill-group reveal">
+                    <h3 class="sg-title">NLP / CV / Data</h3>
+                    <div class="sg-tags">
+                        <span>NLP</span><span>Computer Vision</span><span>Transformers</span>
+                        <span>Tokenization</span><span>Embedding Spaces</span><span>BLEU / ROUGE</span>
+                        <span>ETL Pipelines</span><span>Power BI</span><span>ML Feature Stores</span>
                     </div>
                 </div>
             </div>
@@ -632,51 +500,35 @@
     </section>
 
     <!-- Contact Section -->
-    <section class="section contact" id="contact">
-        <div class="container">
+    <section class="section section-contact" id="contact">
+        <div class="section-inner">
             <div class="section-header">
-                <span class="section-tag"><i class="fas fa-envelope"></i> Get In Touch</span>
-                <h2 class="section-title">Let's Build <span class="gradient-text">Together</span></h2>
-                <p class="section-subtitle">I'm actively looking for new opportunities. Whether you have a question or just want to say hi, I'll get back to you!</p>
+                <span class="section-num">04</span>
+                <h2 class="section-title">Let's Talk</h2>
             </div>
-            <div class="contact-grid">
-                <a href="mailto:sulaxmiraskar496@gmail.com" class="contact-card glass-card">
-                    <div class="contact-icon"><i class="fas fa-envelope"></i></div>
-                    <h3>Email</h3>
-                    <p>sulaxmiraskar496@gmail.com</p>
+            <div class="contact-block">
+                <p class="contact-intro">
+                    Open to senior AI and product engineering roles. If you're building something serious with LLMs, agents, or real-time systems &mdash; I'd love to hear about it.
+                </p>
+                <a href="mailto:sulaxmiraskar496@gmail.com" class="contact-email">
+                    sulaxmiraskar496@gmail.com &#8599;
                 </a>
-                <a href="https://github.com/sulaxmi22" target="_blank" class="contact-card glass-card">
-                    <div class="contact-icon"><i class="fab fa-github"></i></div>
-                    <h3>GitHub</h3>
-                    <p>github.com/sulaxmi22</p>
-                </a>
-                <a href="https://linkedin.com/in/sulaxmi-raskar/" target="_blank" class="contact-card glass-card">
-                    <div class="contact-icon"><i class="fab fa-linkedin"></i></div>
-                    <h3>LinkedIn</h3>
-                    <p>linkedin.com/in/sulaxmi-raskar</p>
-                </a>
-            </div>
-            <div class="contact-cta">
-                <a href="mailto:sulaxmiraskar496@gmail.com" class="btn btn-primary btn-large">
-                    <i class="fas fa-paper-plane"></i> Send me a message
-                </a>
+                <div class="contact-links">
+                    <a href="https://github.com/sulaxmi22" target="_blank" rel="noopener">GitHub &#8599;</a>
+                    <a href="https://linkedin.com/in/sulaxmi-raskar/" target="_blank" rel="noopener">LinkedIn &#8599;</a>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
     <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <span class="footer-logo">
-                    <span class="logo-bracket">&lt;</span>S<span class="logo-dot">.</span>AI<span class="logo-bracket">/&gt;</span>
-                </span>
-                <p>Designed & Built by Sulaxmi — 2026</p>
-                <div class="footer-links">
-                    <a href="https://github.com/sulaxmi22" target="_blank"><i class="fab fa-github"></i></a>
-                    <a href="https://linkedin.com/in/sulaxmi-raskar/" target="_blank"><i class="fab fa-linkedin"></i></a>
-                    <a href="mailto:sulaxmiraskar496@gmail.com"><i class="fas fa-envelope"></i></a>
-                </div>
+        <div class="footer-inner">
+            <span class="footer-name">Sulaxmi Raskar</span>
+            <span class="footer-copy">Designed &amp; built by Sulaxmi &mdash; 2026</span>
+            <div class="footer-links">
+                <a href="https://github.com/sulaxmi22" target="_blank" rel="noopener">GitHub</a>
+                <a href="https://linkedin.com/in/sulaxmi-raskar/" target="_blank" rel="noopener">LinkedIn</a>
             </div>
         </div>
     </footer>
