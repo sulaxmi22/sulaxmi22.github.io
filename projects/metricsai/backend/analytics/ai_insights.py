@@ -12,6 +12,16 @@ from backend.config import settings
 logger = logging.getLogger(__name__)
 
 
+def _parse_json(text: str) -> dict:
+    text = text.strip()
+    if text.startswith("```"):
+        text = text.split("```", 2)[1]
+        if text.startswith("json"):
+            text = text[4:]
+        text = text.rsplit("```", 1)[0]
+    return json.loads(text.strip())
+
+
 class AIInsights:
     """LLM-powered data analysis and anomaly detection."""
 
@@ -48,7 +58,7 @@ Provide your analysis as JSON:
                 temperature=0.1,
                 max_tokens=500,
             )
-            return json.loads(response.choices[0].message.content)
+            return _parse_json(response.choices[0].message.content)
         except Exception as e:
             logger.error(f"AI analysis failed: {e}")
             return {
