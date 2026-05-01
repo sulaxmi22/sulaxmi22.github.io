@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MetricsAI — Real-Time Analytics Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <h1><i class="fas fa-chart-line"></i> MetricsAI</h1>
+                <span class="live-badge"><span class="live-dot"></span> Live</span>
+            </div>
+            <div class="header-right">
+                <button class="btn-ghost" id="insights-btn"><i class="fas fa-brain"></i> AI Insights</button>
+                <button class="btn-ghost" id="ask-btn"><i class="fas fa-comment-dots"></i> Ask AI</button>
+            </div>
+        </header>
+
+        <!-- KPI Cards -->
+        <div class="kpi-row">
+            <div class="kpi-card">
+                <div class="kpi-icon revenue"><i class="fas fa-dollar-sign"></i></div>
+                <div class="kpi-data">
+                    <span class="kpi-label">Revenue</span>
+                    <span class="kpi-value" id="kpi-revenue">$0</span>
+                    <span class="kpi-trend up" id="trend-revenue">+0%</span>
+                </div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-icon users"><i class="fas fa-users"></i></div>
+                <div class="kpi-data">
+                    <span class="kpi-label">Active Users</span>
+                    <span class="kpi-value" id="kpi-users">0</span>
+                    <span class="kpi-trend up" id="trend-users">+0%</span>
+                </div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-icon api"><i class="fas fa-server"></i></div>
+                <div class="kpi-data">
+                    <span class="kpi-label">API Calls</span>
+                    <span class="kpi-value" id="kpi-api">0</span>
+                    <span class="kpi-trend" id="trend-api">0 rps</span>
+                </div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-icon error"><i class="fas fa-exclamation-triangle"></i></div>
+                <div class="kpi-data">
+                    <span class="kpi-label">Error Rate</span>
+                    <span class="kpi-value" id="kpi-error">0%</span>
+                    <span class="kpi-trend" id="trend-error">0ms avg</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="charts-grid">
+            <div class="chart-card wide">
+                <div class="chart-header">
+                    <h3>Revenue & Users Over Time</h3>
+                    <span class="chart-badge">Dual Axis</span>
+                </div>
+                <canvas id="chart-revenue"></canvas>
+            </div>
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>System Performance</h3>
+                    <span class="chart-badge">Real-time</span>
+                </div>
+                <canvas id="chart-performance"></canvas>
+            </div>
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>Error Rate Distribution</h3>
+                    <span class="chart-badge">Trend</span>
+                </div>
+                <canvas id="chart-errors"></canvas>
+            </div>
+        </div>
+
+        <!-- AI Insights Panel (hidden by default) -->
+        <div class="insights-panel" id="insights-panel" style="display:none">
+            <div class="panel-header">
+                <h3><i class="fas fa-brain"></i> AI Insights</h3>
+                <button class="close-btn" onclick="document.getElementById('insights-panel').style.display='none'">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="panel-body" id="insights-body">
+                <div class="loading"><i class="fas fa-spinner fa-spin"></i> Analyzing data...</div>
+            </div>
+        </div>
+
+        <!-- AI Query Modal -->
+        <div class="modal" id="ask-modal" style="display:none">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3><i class="fas fa-comment-dots"></i> Ask AI About Your Data</h3>
+                    <button class="close-btn" onclick="document.getElementById('ask-modal').style.display='none'">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" id="ai-question" placeholder="e.g., What's the average revenue trend?" />
+                    <button class="btn-primary" onclick="askAI()"><i class="fas fa-paper-plane"></i> Ask</button>
+                    <div class="ai-answer" id="ai-answer"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API = 'http://localhost:8002';
+        const WS_URL = 'ws://localhost:8002/ws/stream';
+        const MAX_POINTS = 60;
+
+        // Chart data arrays
+        const labels = [];
+        const revenueData = [];
+        const usersData = [];
+        const cpuData = [];
+        const memData = [];
+        const errorData = [];
+        const rpsData = [];
+
+        let prevRevenue = 0;
+        let prevUsers = 0;
+
+        // Chart.js defaults
+        Chart.defaults.color = '#8e8ea0';
+        Chart.defaults.borderColor = 'rgba(255,255,255,0.04)';
+        Chart.defaults.font.family = 'Inter';
+
+        // Revenue + Users (dual axis)
+        const revenueChart = new Chart(document.getElementById('chart-revenue'), {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [
+                    {
+                        label: 'Revenue ($)',
+                        data: revenueData,
+                        borderColor: '#6366f1',
+                        backgroundColor: 'rgba(99,102,241,0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 2,
+                        pointRadius: 0,
+                        yAxisID: 'y',
+                    },
+                    {
+                        label: 'Active Users',
+                        data: usersData,
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16,185,129,0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 2,
+                        pointRadius: 0,
+                        yAxisID: 'y1',
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: { duration: 300 },
+                scales: {
+                    y: { position: 'left', grid: { display: false } },
+                    y1: { position: 'right', grid: { display: false } },
+                    x: { grid: { display: false }, ticks: { maxTicksLimit: 10 } },
+                },
+                plugins: { legend: { position: 'top' } },
+            },
+        });
+
+        // Performance (CPU + Memory)
+        const perfChart = new Chart(document.getElementById('chart-performance'), {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [
+                    {
+                        label: 'CPU %',
+                        data: cpuData,
+                        borderColor: '#f59e0b',
+                        tension: 0.3,
+                        borderWidth: 2,
+                        pointRadius: 0,
+                    },
+                    {
+                        label: 'Memory %',
+                        data: memData,
+                        borderColor: '#ec4899',
+                        tension: 0.3,
+                        borderWidth: 2,
+                        pointRadius: 0,
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: { duration: 300 },
+                scales: {
+                    y: { min: 0, max: 100, grid: { display: false } },
+                    x: { grid: { display: false }, ticks: { maxTicksLimit: 8 } },
+                },
+            },
+        });
+
+        // Error Rate
+        const errorChart = new Chart(document.getElementById('chart-errors'), {
+            type: 'bar',
+            data: {
+                labels,
+                datasets: [{
+                    label: 'Error Rate %',
+                    data: errorData,
+                    backgroundColor: (ctx) => {
+                        const val = ctx.raw || 0;
+                        return val > 5 ? 'rgba(239,68,68,0.7)' : val > 3 ? 'rgba(251,146,60,0.6)' : 'rgba(16,185,129,0.5)';
+                    },
+                    borderRadius: 3,
+                    borderSkipped: false,
+                }],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: { duration: 300 },
+                scales: {
+                    y: { min: 0, grid: { display: false } },
+                    x: { grid: { display: false }, ticks: { maxTicksLimit: 8 } },
+                },
+            },
+        });
+
+        // WebSocket connection
+        function connectWS() {
+            const ws = new WebSocket(WS_URL);
+
+            ws.onmessage = (e) => {
+                const msg = JSON.parse(e.data);
+                if (msg.type === 'metrics') updateDashboard(msg.data);
+            };
+
+            ws.onclose = () => {
+                console.log('WS disconnected, reconnecting in 3s...');
+                setTimeout(connectWS, 3000);
+            };
+
+            ws.onerror = () => {
+                // If WebSocket fails, fall back to polling
+                ws.close();
+                startPolling();
+            };
+        }
+
+        function startPolling() {
+            setInterval(async () => {
+                try {
+                    const res = await fetch(`${API}/api/metrics/latest`);
+                    const data = await res.json();
+                    updateDashboard(data);
+                } catch (e) {}
+            }, 1500);
+        }
+
+        function updateDashboard(data) {
+            // Update KPIs
+            document.getElementById('kpi-revenue').textContent = '$' + data.revenue.toLocaleString();
+            document.getElementById('kpi-users').textContent = data.active_users.toLocaleString();
+            document.getElementById('kpi-api').textContent = data.api_calls.toLocaleString();
+            document.getElementById('kpi-error').textContent = data.error_rate + '%';
+            document.getElementById('trend-api').textContent = data.requests_per_second + ' rps';
+            document.getElementById('trend-error').textContent = data.avg_response_time_ms + 'ms avg';
+
+            // Revenue trend
+            if (prevRevenue) {
+                const revChange = ((data.revenue - prevRevenue) / prevRevenue * 100).toFixed(1);
+                const trendEl = document.getElementById('trend-revenue');
+                trendEl.textContent = (revChange >= 0 ? '+' : '') + revChange + '%';
+                trendEl.className = 'kpi-trend ' + (revChange >= 0 ? 'up' : 'down');
+            }
+            prevRevenue = data.revenue;
+
+            if (prevUsers) {
+                const userChange = ((data.active_users - prevUsers) / prevUsers * 100).toFixed(1);
+                const trendEl = document.getElementById('trend-users');
+                trendEl.textContent = (userChange >= 0 ? '+' : '') + userChange + '%';
+                trendEl.className = 'kpi-trend ' + (userChange >= 0 ? 'up' : 'down');
+            }
+            prevUsers = data.active_users;
+
+            // Error card color
+            const errorCard = document.getElementById('kpi-error').closest('.kpi-card');
+            errorCard.className = 'kpi-card' + (data.error_rate > 5 ? ' alert' : '');
+
+            // Push to charts
+            labels.push(data.timestamp);
+            revenueData.push(data.revenue);
+            usersData.push(data.active_users);
+            cpuData.push(data.cpu_usage);
+            memData.push(data.memory_usage);
+            errorData.push(data.error_rate);
+            rpsData.push(data.requests_per_second);
+
+            if (labels.length > MAX_POINTS) {
+                labels.shift(); revenueData.shift(); usersData.shift();
+                cpuData.shift(); memData.shift(); errorData.shift(); rpsData.shift();
+            }
+
+            revenueChart.update('none');
+            perfChart.update('none');
+            errorChart.update('none');
+        }
+
+        // Load initial history
+        async function loadHistory() {
+            try {
+                const res = await fetch(`${API}/api/metrics/history?points=60`);
+                const history = await res.json();
+                history.forEach(d => updateDashboard(d));
+            } catch (e) {
+                console.log('Backend not available, charts will populate on connect');
+            }
+        }
+
+        // AI Insights
+        document.getElementById('insights-btn').addEventListener('click', async () => {
+            const panel = document.getElementById('insights-panel');
+            const body = document.getElementById('insights-body');
+            panel.style.display = 'block';
+            body.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Analyzing data with AI...</div>';
+
+            try {
+                const res = await fetch(`${API}/api/insights`);
+                const data = await res.json();
+                let html = `<div class="insight-status status-${data.status}"><i class="fas fa-circle"></i> ${data.status.toUpperCase()}</div>`;
+                html += `<p class="key-summary">${data.key_metric_summary}</p>`;
+                data.insights.forEach(i => {
+                    html += `<div class="insight-card severity-${i.severity}">
+                        <span class="insight-type">${i.type}</span>
+                        <h4>${i.title}</h4>
+                        <p>${i.description}</p>
+                    </div>`;
+                });
+                body.innerHTML = html;
+            } catch (e) {
+                body.innerHTML = '<div class="error">Could not reach API. Is the backend running?</div>';
+            }
+        });
+
+        // Ask AI
+        document.getElementById('ask-btn').addEventListener('click', () => {
+            document.getElementById('ask-modal').style.display = 'flex';
+        });
+
+        async function askAI() {
+            const q = document.getElementById('ai-question').value.trim();
+            if (!q) return;
+            const answerEl = document.getElementById('ai-answer');
+            answerEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Thinking...';
+
+            try {
+                const res = await fetch(`${API}/api/query`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ question: q }),
+                });
+                const data = await res.json();
+                answerEl.textContent = data.answer;
+            } catch (e) {
+                answerEl.textContent = 'Error: Could not reach the API.';
+            }
+        }
+
+        document.getElementById('ai-question').addEventListener('keydown', e => {
+            if (e.key === 'Enter') askAI();
+        });
+
+        // Initialize
+        loadHistory();
+        connectWS();
+    </script>
+</body>
+</html>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgentForge — Multi-Agent Research Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app">
+        <header class="top-bar">
+            <h1><i class="fas fa-robot"></i> AgentForge</h1>
+            <span class="badge">Multi-Agent Research • LangGraph</span>
+        </header>
+
+        <div class="main-layout">
+            <!-- Agent Activity Panel -->
+            <aside class="agent-panel">
+                <h3><i class="fas fa-project-diagram"></i> Agent Flow</h3>
+                <div class="agent-flow-visual">
+                    <div class="flow-node" id="node-router">
+                        <div class="node-icon"><i class="fas fa-route"></i></div>
+                        <span>Router</span>
+                        <div class="node-status" id="status-router"></div>
+                    </div>
+                    <div class="flow-arrow">↓</div>
+                    <div class="flow-node" id="node-researcher">
+                        <div class="node-icon"><i class="fas fa-search"></i></div>
+                        <span>Researcher</span>
+                        <div class="node-status" id="status-researcher"></div>
+                    </div>
+                    <div class="flow-arrow">↓</div>
+                    <div class="flow-node" id="node-writer">
+                        <div class="node-icon"><i class="fas fa-pen-fancy"></i></div>
+                        <span>Writer</span>
+                        <div class="node-status" id="status-writer"></div>
+                    </div>
+                    <div class="flow-arrow">↓</div>
+                    <div class="flow-node" id="node-critic">
+                        <div class="node-icon"><i class="fas fa-check-double"></i></div>
+                        <span>Critic</span>
+                        <div class="node-status" id="status-critic"></div>
+                    </div>
+                    <div class="flow-arrow" id="revision-arrow" style="display:none">↻ Revising</div>
+                </div>
+
+                <h3 style="margin-top:24px"><i class="fas fa-list"></i> Activity Log</h3>
+                <div class="activity-log" id="activity-log">
+                    <div class="log-empty">Submit a query to see agent activity</div>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="content">
+                <div class="output-area" id="output-area">
+                    <div class="welcome">
+                        <div class="welcome-icon"><i class="fas fa-robot"></i></div>
+                        <h2>Multi-Agent Research Assistant</h2>
+                        <p>Ask any research question. Four specialized AI agents — Router, Researcher, Writer, and Critic — will collaborate to produce a comprehensive, fact-checked report.</p>
+                        <div class="example-queries">
+                            <button class="example-btn" onclick="setQuery('Compare the pros and cons of LangGraph vs CrewAI for building multi-agent systems')">LangGraph vs CrewAI comparison</button>
+                            <button class="example-btn" onclick="setQuery('What are the latest advancements in RAG pipeline optimization techniques in 2025?')">RAG optimization 2025</button>
+                            <button class="example-btn" onclick="setQuery('Analyze the current state of AI agent frameworks and recommend the best for enterprise use')">Enterprise AI agent frameworks</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-section">
+                    <div class="input-wrap">
+                        <textarea id="query" placeholder="Ask a research question..." rows="2"></textarea>
+                        <button id="submit-btn" onclick="submitQuery()">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                    <div class="input-meta">
+                        <span>Agents: Router → Researcher → Writer → Critic (with revision loop)</span>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        const API = 'http://localhost:8001';
+        const queryEl = document.getElementById('query');
+        const outputEl = document.getElementById('output-area');
+        const logEl = document.getElementById('activity-log');
+        const submitBtn = document.getElementById('submit-btn');
+
+        function setQuery(q) { queryEl.value = q; }
+
+        queryEl.addEventListener('keydown', e => {
+            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submitQuery(); }
+        });
+
+        async function submitQuery() {
+            const q = queryEl.value.trim();
+            if (!q) return;
+
+            submitBtn.disabled = true;
+            queryEl.value = '';
+
+            // Clear previous
+            outputEl.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Agents are working...</div>';
+            logEl.innerHTML = '';
+            resetNodes();
+
+            try {
+                const res = await fetch(`${API}/research`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query: q, stream: true }),
+                });
+
+                const reader = res.body.getReader();
+                const decoder = new TextDecoder();
+                let finalOutput = '';
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+
+                    const lines = decoder.decode(value).split('\n');
+                    for (const line of lines) {
+                        if (!line.startsWith('data: ')) continue;
+                        try {
+                            const data = JSON.parse(line.slice(6));
+
+                            if (data.type === 'agent_activity') {
+                                addLogEntry(data.log);
+                                activateNode(data.log.agent.toLowerCase());
+                            } else if (data.type === 'output') {
+                                finalOutput = data.content;
+                            } else if (data.type === 'quality') {
+                                addLogEntry({ agent: 'Quality', action: `Score: ${data.score.toFixed(2)}`, details: '', timestamp: Date.now()/1000 });
+                            } else if (data.type === 'done') {
+                                addLogEntry({ agent: 'System', action: `Complete in ${data.timing_ms}ms`, details: '', timestamp: Date.now()/1000 });
+                                finalizeNodes();
+                            }
+                        } catch (e) {}
+                    }
+                }
+
+                finalizeNodes();
+                outputEl.innerHTML = `<div class="report">${formatMd(finalOutput)}</div>`;
+            } catch (err) {
+                outputEl.innerHTML = `<div class="error"><i class="fas fa-exclamation-circle"></i> Connection error. Is the backend running on ${API}?</div>`;
+            }
+
+            submitBtn.disabled = false;
+        }
+
+        function addLogEntry(log) {
+            const div = document.createElement('div');
+            div.className = 'log-entry';
+            div.innerHTML = `<span class="log-agent agent-${log.agent.toLowerCase()}">${log.agent}</span>
+                <span class="log-action">${log.action}</span>
+                ${log.details ? `<span class="log-details">${log.details}</span>` : ''}`;
+            logEl.appendChild(div);
+            logEl.scrollTop = logEl.scrollHeight;
+        }
+
+        const NODE_ORDER = ['router', 'researcher', 'writer', 'critic'];
+        let activeNodeName = null;
+
+        function activateNode(name) {
+            // Mark the previously active node as done
+            if (activeNodeName && activeNodeName !== name) {
+                const prev = document.getElementById(`node-${activeNodeName}`);
+                if (prev) {
+                    prev.classList.remove('active');
+                    prev.classList.add('done');
+                    const status = document.getElementById(`status-${activeNodeName}`);
+                    if (status) {
+                        status.textContent = '✓';
+                        status.style.cssText = 'color:#10b981;font-size:0.7rem;font-weight:700;margin-left:auto';
+                    }
+                }
+            }
+
+            // Show revision arrow when writer re-runs after critic
+            const revisionArrow = document.getElementById('revision-arrow');
+            if (name === 'writer' && activeNodeName === 'critic') {
+                if (revisionArrow) revisionArrow.style.display = 'block';
+            }
+
+            // Activate current node
+            document.querySelectorAll('.flow-node').forEach(n => n.classList.remove('active'));
+            const node = document.getElementById(`node-${name}`);
+            if (node) {
+                node.classList.add('active');
+                node.classList.remove('done');
+                const status = document.getElementById(`status-${name}`);
+                if (status) {
+                    status.textContent = '●';
+                    status.style.cssText = 'color:#6366f1;font-size:0.6rem;margin-left:auto;animation:blink 1s infinite';
+                }
+            }
+
+            activeNodeName = name;
+        }
+
+        function resetNodes() {
+            document.querySelectorAll('.flow-node').forEach(n => n.classList.remove('active', 'done'));
+            document.querySelectorAll('.node-status').forEach(s => { s.textContent = ''; s.style.cssText = ''; });
+            const revisionArrow = document.getElementById('revision-arrow');
+            if (revisionArrow) revisionArrow.style.display = 'none';
+            activeNodeName = null;
+        }
+
+        function finalizeNodes() {
+            // Mark all visited nodes as done after pipeline completes
+            if (activeNodeName) {
+                const node = document.getElementById(`node-${activeNodeName}`);
+                if (node) {
+                    node.classList.remove('active');
+                    node.classList.add('done');
+                    const status = document.getElementById(`status-${activeNodeName}`);
+                    if (status) {
+                        status.textContent = '✓';
+                        status.style.cssText = 'color:#10b981;font-size:0.7rem;font-weight:700;margin-left:auto';
+                    }
+                }
+                activeNodeName = null;
+            }
+        }
+
+        function formatMd(text) {
+            return text
+                .replace(/### (.*)/g, '<h3>$1</h3>')
+                .replace(/## (.*)/g, '<h2>$1</h2>')
+                .replace(/# (.*)/g, '<h1>$1</h1>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/`(.*?)`/g, '<code>$1</code>')
+                .replace(/- (.*)/g, '<li>$1</li>')
+                .replace(/\n/g, '<br>');
+        }
+    </script>
+</body>
+</html>

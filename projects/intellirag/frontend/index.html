@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IntelliRAG — Enterprise RAG Pipeline</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1><i class="fas fa-brain"></i> IntelliRAG</h1>
+                <p class="subtitle">Enterprise RAG Pipeline</p>
+            </div>
+
+            <!-- Upload Section -->
+            <div class="upload-section">
+                <h3><i class="fas fa-upload"></i> Ingest Documents</h3>
+                <div class="upload-zone" id="upload-zone">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Drop files here or click to upload</p>
+                    <span>PDF, TXT, MD supported</span>
+                    <input type="file" id="file-input" accept=".pdf,.txt,.md" hidden>
+                </div>
+                <div class="upload-status" id="upload-status"></div>
+            </div>
+
+            <!-- Collection Stats -->
+            <div class="stats-section">
+                <h3><i class="fas fa-database"></i> Collection</h3>
+                <div class="stat-row">
+                    <span>Documents Indexed</span>
+                    <span class="stat-value" id="doc-count">0</span>
+                </div>
+                <div class="stat-row">
+                    <span>Status</span>
+                    <span class="stat-value status-ready" id="status">Ready</span>
+                </div>
+            </div>
+
+            <!-- Pipeline Info -->
+            <div class="pipeline-info">
+                <h3><i class="fas fa-cogs"></i> Pipeline</h3>
+                <div class="pipeline-steps">
+                    <div class="step"><span class="step-dot"></span> Hybrid Search (BM25 + Vector)</div>
+                    <div class="step"><span class="step-dot"></span> Cross-Encoder Reranking</div>
+                    <div class="step"><span class="step-dot"></span> Corrective RAG</div>
+                    <div class="step"><span class="step-dot"></span> Streaming Generation</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Chat Area -->
+        <main class="chat-area">
+            <div class="chat-header">
+                <div class="model-badge">
+                    <i class="fas fa-microchip"></i>
+                    <span id="model-name">GPT-4o-mini</span>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-icon" id="eval-btn" title="Run RAGAS Evaluation">
+                        <i class="fas fa-chart-bar"></i>
+                    </button>
+                    <button class="btn-icon" id="clear-btn" title="Clear Chat">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="messages" id="messages">
+                <div class="welcome-message">
+                    <div class="welcome-icon"><i class="fas fa-brain"></i></div>
+                    <h2>Welcome to IntelliRAG</h2>
+                    <p>Upload documents and ask questions. I'll retrieve the most relevant context using hybrid search and cross-encoder reranking, then generate answers with source citations.</p>
+                    <div class="feature-chips">
+                        <span><i class="fas fa-search"></i> Hybrid Search</span>
+                        <span><i class="fas fa-sort-amount-up"></i> Reranking</span>
+                        <span><i class="fas fa-stream"></i> Streaming</span>
+                        <span><i class="fas fa-quote-right"></i> Citations</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Bar -->
+            <div class="input-bar">
+                <div class="input-wrapper">
+                    <textarea id="query-input" placeholder="Ask a question about your documents..." rows="1"></textarea>
+                    <button class="send-btn" id="send-btn">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+                <div class="input-info">
+                    <span>IntelliRAG uses hybrid search + cross-encoder reranking for maximum precision</span>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8000';
+        const messages = document.getElementById('messages');
+        const queryInput = document.getElementById('query-input');
+        const sendBtn = document.getElementById('send-btn');
+        const fileInput = document.getElementById('file-input');
+        const uploadZone = document.getElementById('upload-zone');
+        const uploadStatus = document.getElementById('upload-status');
+        const clearBtn = document.getElementById('clear-btn');
+        const docCount = document.getElementById('doc-count');
+
+        // Tracks the last completed Q&A pair for RAGAS evaluation
+        let lastQA = { question: '', answer: '', contexts: [] };
+
+        // Auto-resize textarea
+        queryInput.addEventListener('input', () => {
+            queryInput.style.height = 'auto';
+            queryInput.style.height = Math.min(queryInput.scrollHeight, 120) + 'px';
+        });
+
+        // Send on Enter (Shift+Enter for new line)
+        queryInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendQuery();
+            }
+        });
+
+        sendBtn.addEventListener('click', sendQuery);
+        clearBtn.addEventListener('click', () => {
+            messages.innerHTML = '';
+            lastQA = { question: '', answer: '', contexts: [] };
+        });
+
+        // RAGAS Evaluation button
+        document.getElementById('eval-btn').addEventListener('click', async () => {
+            if (!lastQA.question) {
+                const notice = document.createElement('div');
+                notice.className = 'message assistant';
+                const inner = document.createElement('div');
+                inner.className = 'message-content';
+                const warn = document.createElement('div');
+                warn.className = 'warning';
+                warn.textContent = 'Ask a question first, then evaluate that Q & A pair.';
+                inner.appendChild(warn);
+                notice.appendChild(inner);
+                messages.appendChild(notice);
+                setTimeout(() => notice.remove(), 3000);
+                return;
+            }
+
+            const evalId = 'eval-' + Date.now();
+            addMessage('assistant', '<i class="fas fa-spinner fa-spin"></i> Running RAGAS evaluation…', { id: evalId });
+
+            try {
+                const res = await fetch(`${API_URL}/evaluate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(lastQA),
+                });
+                const data = await res.json();
+                const el = document.getElementById(evalId);
+                el.textContent = '';
+
+                const container = document.createElement('div');
+                container.className = 'eval-results';
+
+                const heading = document.createElement('h4');
+                const icon = document.createElement('i');
+                icon.className = 'fas fa-chart-bar';
+                heading.appendChild(icon);
+                heading.appendChild(document.createTextNode(' RAGAS Evaluation Results'));
+                container.appendChild(heading);
+
+                const metricsDiv = document.createElement('div');
+                metricsDiv.className = 'eval-metrics';
+
+                [
+                    { label: 'Faithfulness', key: 'faithfulness' },
+                    { label: 'Answer Relevancy', key: 'answer_relevancy' },
+                    { label: 'Context Precision', key: 'context_precision' },
+                ].forEach(m => {
+                    const pct = Math.round((data[m.key] || 0) * 100);
+                    const metricDiv = document.createElement('div');
+                    metricDiv.className = 'eval-metric';
+
+                    const row = document.createElement('div');
+                    row.className = 'eval-row';
+                    const lbl = document.createElement('span');
+                    lbl.className = 'eval-label';
+                    lbl.textContent = m.label;
+                    const val = document.createElement('span');
+                    val.className = 'eval-value';
+                    val.textContent = pct + '%';
+                    row.appendChild(lbl);
+                    row.appendChild(val);
+
+                    const bar = document.createElement('div');
+                    bar.className = 'eval-bar';
+                    const fill = document.createElement('div');
+                    fill.className = 'eval-bar-fill';
+                    fill.style.width = pct + '%';
+                    bar.appendChild(fill);
+
+                    metricDiv.appendChild(row);
+                    metricDiv.appendChild(bar);
+                    metricsDiv.appendChild(metricDiv);
+                });
+                container.appendChild(metricsDiv);
+
+                const overallRow = document.createElement('div');
+                overallRow.className = 'eval-overall';
+                const overallLbl = document.createElement('span');
+                overallLbl.className = 'eval-overall-label';
+                overallLbl.textContent = 'Overall Score';
+                const overallVal = document.createElement('span');
+                overallVal.className = 'eval-overall-value';
+                overallVal.textContent = Math.round((data.overall || 0) * 100) + '%';
+                overallRow.appendChild(overallLbl);
+                overallRow.appendChild(overallVal);
+                container.appendChild(overallRow);
+
+                el.appendChild(container);
+            } catch (_err) {
+                const el = document.getElementById(evalId);
+                if (el) el.textContent = 'Evaluation failed. Is the backend running?';
+            }
+        });
+
+        // File upload
+        uploadZone.addEventListener('click', () => fileInput.click());
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.classList.add('dragover');
+        });
+        uploadZone.addEventListener('dragleave', () => {
+            uploadZone.classList.remove('dragover');
+        });
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            if (e.dataTransfer.files.length) uploadFile(e.dataTransfer.files[0]);
+        });
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length) uploadFile(fileInput.files[0]);
+        });
+
+        async function uploadFile(file) {
+            uploadStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Ingesting...';
+            uploadStatus.className = 'upload-status uploading';
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const res = await fetch(`${API_URL}/ingest/file`, { method: 'POST', body: formData });
+                const data = await res.json();
+                uploadStatus.innerHTML = `<i class="fas fa-check"></i> ${data.chunks_created} chunks indexed from ${data.file}`;
+                uploadStatus.className = 'upload-status success';
+                refreshStats();
+            } catch (err) {
+                uploadStatus.innerHTML = `<i class="fas fa-times"></i> Upload failed: ${err.message}`;
+                uploadStatus.className = 'upload-status error';
+            }
+        }
+
+        async function refreshStats() {
+            try {
+                const res = await fetch(`${API_URL}/collection/stats`);
+                const data = await res.json();
+                docCount.textContent = data.total_chunks;
+            } catch (e) {}
+        }
+
+        function addMessage(role, content, extras = {}) {
+            const div = document.createElement('div');
+            div.className = `message ${role}`;
+
+            let html = `<div class="message-content">`;
+            if (role === 'user') {
+                html += `<div class="message-text">${escapeHtml(content)}</div>`;
+            } else {
+                html += `<div class="message-text" id="${extras.id || ''}">${content}</div>`;
+                if (extras.citations) {
+                    html += `<div class="citations">`;
+                    html += `<h4><i class="fas fa-quote-right"></i> Sources</h4>`;
+                    extras.citations.forEach(c => {
+                        html += `<div class="citation"><span class="source">${c.source}</span><span class="page">Page ${c.page}</span><span class="score">${(c.relevance_score * 100).toFixed(0)}%</span></div>`;
+                    });
+                    html += `</div>`;
+                }
+                if (extras.metrics) {
+                    html += `<div class="response-metrics">`;
+                    html += `<span><i class="fas fa-clock"></i> ${extras.metrics.timing_ms}ms</span>`;
+                    html += `<span><i class="fas fa-layer-group"></i> ${extras.metrics.chunks_used} chunks</span>`;
+                    html += `<span><i class="fas fa-bullseye"></i> ${(extras.metrics.relevance_score * 100).toFixed(0)}% relevance</span>`;
+                    html += `</div>`;
+                }
+            }
+            html += `</div>`;
+            div.innerHTML = html;
+            messages.appendChild(div);
+            messages.scrollTop = messages.scrollHeight;
+            return div;
+        }
+
+        async function sendQuery() {
+            const question = queryInput.value.trim();
+            if (!question) return;
+
+            queryInput.value = '';
+            queryInput.style.height = 'auto';
+
+            // Remove welcome message
+            const welcome = messages.querySelector('.welcome-message');
+            if (welcome) welcome.remove();
+
+            // Show user message
+            addMessage('user', question);
+
+            // Show loading
+            const responseId = 'response-' + Date.now();
+            const assistantDiv = addMessage('assistant', '<i class="fas fa-spinner fa-spin"></i> Searching and generating...', { id: responseId });
+
+            try {
+                const res = await fetch(`${API_URL}/query`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ question, stream: true }),
+                });
+
+                const reader = res.body.getReader();
+                const decoder = new TextDecoder();
+                let fullText = '';
+                let citations = [];
+                let metrics = null;
+
+                const textEl = document.getElementById(responseId);
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+
+                    const chunk = decoder.decode(value);
+                    const lines = chunk.split('\n');
+
+                    for (const line of lines) {
+                        if (!line.startsWith('data: ')) continue;
+                        try {
+                            const data = JSON.parse(line.slice(6));
+                            if (data.type === 'token') {
+                                fullText += data.content;
+                                textEl.innerHTML = formatMarkdown(fullText);
+                            } else if (data.type === 'sources') {
+                                citations = data.citations;
+                            } else if (data.type === 'metrics') {
+                                metrics = data;
+                            } else if (data.type === 'warning') {
+                                textEl.innerHTML = `<div class="warning"><i class="fas fa-exclamation-triangle"></i> ${data.content}</div>` + fullText;
+                            }
+                        } catch (e) {}
+                    }
+                }
+
+                // Capture last Q&A for RAGAS evaluation
+                lastQA = {
+                    question,
+                    answer: fullText,
+                    contexts: citations.map(c => c.source),
+                };
+
+                // Re-render with citations and metrics
+                assistantDiv.innerHTML = '';
+                let html = `<div class="message-content">`;
+                html += `<div class="message-text">${formatMarkdown(fullText)}</div>`;
+                if (citations.length) {
+                    html += `<div class="citations"><h4><i class="fas fa-quote-right"></i> Sources</h4>`;
+                    citations.forEach(c => {
+                        html += `<div class="citation"><span class="source">${c.source}</span><span class="page">Page ${c.page}</span><span class="score">${(c.relevance_score * 100).toFixed(0)}%</span></div>`;
+                    });
+                    html += `</div>`;
+                }
+                if (metrics) {
+                    html += `<div class="response-metrics">`;
+                    html += `<span><i class="fas fa-clock"></i> ${metrics.timing_ms}ms</span>`;
+                    html += `<span><i class="fas fa-layer-group"></i> ${metrics.chunks_used} chunks</span>`;
+                    html += `<span><i class="fas fa-bullseye"></i> ${(metrics.relevance_score * 100).toFixed(0)}% relevance</span>`;
+                    html += `</div>`;
+                }
+                html += `</div>`;
+                assistantDiv.innerHTML = html;
+
+            } catch (err) {
+                document.getElementById(responseId).innerHTML =
+                    `<div class="error"><i class="fas fa-exclamation-circle"></i> Connection error. Is the backend running on ${API_URL}?</div>`;
+            }
+
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function formatMarkdown(text) {
+            return text
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/`(.*?)`/g, '<code>$1</code>')
+                .replace(/\n/g, '<br>')
+                .replace(/\[Source: (.*?)\]/g, '<span class="inline-citation">[$1]</span>');
+        }
+
+        // Init
+        refreshStats();
+    </script>
+</body>
+</html>
