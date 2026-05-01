@@ -30,6 +30,17 @@ def _log_entry(agent: str, action: str, details: str = "") -> dict:
     }
 
 
+def _parse_json(text: str) -> dict:
+    """Strip markdown code fences then parse JSON — LLMs often wrap JSON in ```json ... ```."""
+    text = text.strip()
+    if text.startswith("```"):
+        text = text.split("```", 2)[1]
+        if text.startswith("json"):
+            text = text[4:]
+        text = text.rsplit("```", 1)[0]
+    return json.loads(text.strip())
+
+
 async def _llm_call(system_prompt: str, user_prompt: str, json_mode: bool = False) -> str:
     """Helper to make an LLM call."""
     kwargs = {
@@ -64,7 +75,7 @@ async def router_node(state: AgentState) -> dict:
 Respond with ONLY JSON: {"query_type": "research|document_analysis|direct_answer", "reasoning": "brief explanation"}"""
 
     result = await _llm_call(system_prompt, state["query"], json_mode=True)
-    parsed = json.loads(result)
+    parsed = _parse_json(result)
     query_type = parsed.get("query_type", "research")
 
     return {
@@ -223,7 +234,7 @@ Respond with JSON:
         json_mode=True,
     )
 
-    parsed = json.loads(result)
+    parsed = _parse_json(result)
     quality_score = min(max(float(parsed.get("quality_score", 0.5)), 0.0), 1.0)
 
     return {
