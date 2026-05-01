@@ -41,9 +41,6 @@ async def _llm_call(system_prompt: str, user_prompt: str, json_mode: bool = Fals
         "temperature": 0.2,
         "max_tokens": 2048,
     }
-    if json_mode:
-        kwargs["response_format"] = {"type": "json_object"}
-    
     response = await _client.chat.completions.create(**kwargs)
     return response.choices[0].message.content
 

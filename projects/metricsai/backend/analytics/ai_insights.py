@@ -47,7 +47,6 @@ Provide your analysis as JSON:
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.1,
                 max_tokens=500,
-                response_format={"type": "json_object"},
             )
             return json.loads(response.choices[0].message.content)
         except Exception as e:

@@ -49,7 +49,7 @@ Respond with ONLY a JSON object: {{"score": <float>, "reasoning": "<brief explan
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.0,
                 max_tokens=200,
-                response_format={"type": "json_object"},
+
             )
             import json
             result = json.loads(response.choices[0].message.content)
@@ -82,7 +82,7 @@ Respond with ONLY a JSON object: {{"score": <float>, "reasoning": "<brief explan
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.0,
                 max_tokens=200,
-                response_format={"type": "json_object"},
+
             )
             import json
             result = json.loads(response.choices[0].message.content)
@@ -115,7 +115,7 @@ Respond with ONLY a JSON object: {{"relevance": [1, 0, 1, ...]}}"""
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.0,
                 max_tokens=100,
-                response_format={"type": "json_object"},
+
             )
             import json
             result = json.loads(response.choices[0].message.content)
