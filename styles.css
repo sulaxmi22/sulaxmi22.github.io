@@ -287,8 +287,7 @@ button { font-family: inherit; }
 
 .hero-name-line { display: block; }
 
-.hero-name-line.italic {
-    font-style: italic;
+.name-ax {
     color: var(--rust);
 }
 
