@@ -9,20 +9,15 @@ pydantic-settings>=2.0
 langchain>=0.3.0
 langchain-community>=0.3.0
 langchain-text-splitters>=0.3.0
-langchain-huggingface>=0.1.0
 openai>=1.50.0,<2.0.0
 
-# Embeddings & Retrieval
-sentence-transformers>=3.0
+# Retrieval
 chromadb>=0.5.0
 rank-bm25>=0.2.2
 
 # Document Loading
 pypdf>=4.0
 unstructured>=0.15.0
-
-# Cross-Encoder
-torch>=2.0  # Required for cross-encoder
 
 # Utilities
 python-dotenv>=1.0

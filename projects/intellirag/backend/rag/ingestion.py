@@ -14,10 +14,10 @@ from langchain_community.document_loaders import (
     TextLoader,
     UnstructuredMarkdownLoader,
 )
-from langchain_huggingface import HuggingFaceEmbeddings
 import chromadb
 
 from backend.config import settings
+from backend.rag.embeddings import NVIDIAEmbeddings
 
 logger = logging.getLogger(__name__)
 
@@ -33,11 +33,7 @@ class DocumentIngestion:
     """Handles document ingestion: loading, chunking, embedding, and storage."""
 
     def __init__(self):
-        self.embeddings = HuggingFaceEmbeddings(
-            model_name=settings.embedding_model,
-            model_kwargs={"device": "cpu"},
-            encode_kwargs={"normalize_embeddings": True},
-        )
+        self.embeddings = NVIDIAEmbeddings()
         self.text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=settings.chunk_size,
             chunk_overlap=settings.chunk_overlap,

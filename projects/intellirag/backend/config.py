@@ -19,10 +19,10 @@ class Settings(BaseSettings):
     )
     openai_model: str = Field(default="gpt-4o-mini", description="LLM model name")
 
-    # Embedding
+    # Embedding (API-based via NVIDIA NIM — no local model)
     embedding_model: str = Field(
-        default="all-MiniLM-L6-v2",
-        description="Sentence transformer model for embeddings",
+        default="nvidia/nv-embedqa-e5-v5",
+        description="Embedding model served via NVIDIA NIM API",
     )
 
     # Retrieval
@@ -32,12 +32,6 @@ class Settings(BaseSettings):
     top_k_rerank: int = Field(default=5, description="Number of chunks after reranking")
     relevance_threshold: float = Field(
         default=0.3, description="Minimum relevance score for retrieval"
-    )
-
-    # Reranker
-    reranker_model: str = Field(
-        default="cross-encoder/ms-marco-MiniLM-L-6-v2",
-        description="Cross-encoder model for reranking",
     )
 
     # ChromaDB

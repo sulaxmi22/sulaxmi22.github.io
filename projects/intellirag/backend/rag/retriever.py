@@ -6,11 +6,10 @@ Implements BM25 + Dense Vector hybrid search with Cross-Encoder reranking.
 import logging
 from dataclasses import dataclass
 from rank_bm25 import BM25Okapi
-from sentence_transformers import CrossEncoder
-from langchain_huggingface import HuggingFaceEmbeddings
 import chromadb
 
 from backend.config import settings
+from backend.rag.embeddings import NVIDIAEmbeddings
 
 logger = logging.getLogger(__name__)
 
@@ -35,12 +34,7 @@ class HybridRetriever:
     """
 
     def __init__(self):
-        self.embeddings = HuggingFaceEmbeddings(
-            model_name=settings.embedding_model,
-            model_kwargs={"device": "cpu"},
-            encode_kwargs={"normalize_embeddings": True},
-        )
-        self.reranker = CrossEncoder(settings.reranker_model, max_length=512)
+        self.embeddings = NVIDIAEmbeddings()
         self.chroma_client = chromadb.PersistentClient(path=settings.chroma_persist_dir)
         self.collection = self.chroma_client.get_or_create_collection(
             name=settings.chroma_collection,
@@ -140,20 +134,9 @@ class HybridRetriever:
         return fused
 
     def _rerank(self, query: str, chunks: list[RetrievedChunk], top_k: int) -> list[RetrievedChunk]:
-        """Rerank chunks using a Cross-Encoder for maximum precision."""
-        if not chunks:
-            return []
-
-        # Prepare pairs for cross-encoder
-        pairs = [(query, chunk.content) for chunk in chunks]
-        scores = self.reranker.predict(pairs)
-
-        # Attach scores
-        for chunk, score in zip(chunks, scores):
-            chunk.rerank_score = float(score)
-
-        # Sort by rerank score and return top-k
-        chunks.sort(key=lambda x: x.rerank_score, reverse=True)
+        """Use RRF score as the final ranking — no local cross-encoder model needed."""
+        for chunk in chunks:
+            chunk.rerank_score = chunk.rrf_score
         return chunks[:top_k]
 
     async def retrieve(self, query: str) -> list[RetrievedChunk]:

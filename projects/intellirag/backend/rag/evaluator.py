@@ -3,10 +3,21 @@ IntelliRAG — RAGAS-style Evaluation Module
 Measures RAG pipeline quality: Faithfulness, Answer Relevancy, Context Precision.
 """
 
+import json
 import logging
 from openai import AsyncOpenAI
 
 from backend.config import settings
+
+
+def _parse_json(text: str) -> dict:
+    text = text.strip()
+    if text.startswith("```"):
+        text = text.split("```", 2)[1]
+        if text.startswith("json"):
+            text = text[4:]
+        text = text.rsplit("```", 1)[0]
+    return json.loads(text.strip())
 
 logger = logging.getLogger(__name__)
 
@@ -51,8 +62,7 @@ Respond with ONLY a JSON object: {{"score": <float>, "reasoning": "<brief explan
                 max_tokens=200,
 
             )
-            import json
-            result = json.loads(response.choices[0].message.content)
+            result = _parse_json(response.choices[0].message.content)
             return min(max(float(result.get("score", 0.0)), 0.0), 1.0)
         except Exception as e:
             logger.error(f"Faithfulness evaluation failed: {e}")
@@ -84,8 +94,7 @@ Respond with ONLY a JSON object: {{"score": <float>, "reasoning": "<brief explan
                 max_tokens=200,
 
             )
-            import json
-            result = json.loads(response.choices[0].message.content)
+            result = _parse_json(response.choices[0].message.content)
             return min(max(float(result.get("score", 0.0)), 0.0), 1.0)
         except Exception as e:
             logger.error(f"Relevancy evaluation failed: {e}")
@@ -117,8 +126,7 @@ Respond with ONLY a JSON object: {{"relevance": [1, 0, 1, ...]}}"""
                 max_tokens=100,
 
             )
-            import json
-            result = json.loads(response.choices[0].message.content)
+            result = _parse_json(response.choices[0].message.content)
             relevance = result.get("relevance", [])
 
             if not relevance:
