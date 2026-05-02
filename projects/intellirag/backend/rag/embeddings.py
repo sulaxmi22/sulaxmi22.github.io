@@ -19,8 +19,13 @@ class NVIDIAEmbeddings:
         self.model = settings.embedding_model
 
     def embed_documents(self, texts: list[str]) -> list[list[float]]:
-        response = self.client.embeddings.create(input=texts, model=self.model)
+        response = self.client.embeddings.create(
+            input=texts, model=self.model, extra_body={"input_type": "passage"}
+        )
         return [item.embedding for item in response.data]
 
     def embed_query(self, text: str) -> list[float]:
-        return self.embed_documents([text])[0]
+        response = self.client.embeddings.create(
+            input=[text], model=self.model, extra_body={"input_type": "query"}
+        )
+        return response.data[0].embedding
